@@ -12,7 +12,7 @@ import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect
 export default function LandingPage() {
   return (
     <div className="bg-[#141414] min-h-screen text-white flex justify-center items-center">
-    <BackgroundRippleEffect />
+    {/* <BackgroundRippleEffect /> */}
       <main className="container mx-auto px-6"> 
         <div className="grid lg:grid-cols-2 gap-12 items-center">       
           {/* Left Content */}
