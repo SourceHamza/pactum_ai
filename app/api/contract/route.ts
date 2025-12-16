@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
-import OpenAI from "openai"
+import { GoogleGenAI } from "@google/genai"
+
+
 
 export const runtime = "nodejs"
+
+const geminiKey = process.env.GEMINI_KEY
 
 const CorePrompt = `You are an AI contract analysis engine.
 
@@ -34,67 +38,127 @@ You must return a JSON object that strictly follows this schema:
   "recommendedActions": ["string"]
 }`
 
-async function analyze(contract: string) {
-    const client = new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
-    })
+// CHUNKIN LOGIC 
+function simpleChunk(text: string, size = 3500) {
+    const chunks = [];
+    let i = 0;
 
-    const USER_PROMPT_WITH_CONTRACT = `Analyze the following contract:
+    while (i < text.length) {
+        chunks.push(text.slice(i, i + size));
+        i += size;
+    }
 
+    return chunks;
+}
+
+function buildPrompt(chunk: string) {
+    return `
+Analyze the following PART of a contract.
+
+Rules:
+- This is not the full contract
+- Only report issues you see in this text
+- Do NOT assume missing clauses
+Payment terms
+- Scope clarity
+- Intellectual property ownership
+- Termination conditions
+- Liability and indemnity
+- Confidentiality and data protection
+
+Contract text:
 """
-${contract}
-"""`
-
-    const response = await client.responses.create({
-        model: "gpt-5-nano",
-        input: [
-            { role: "system", content: CorePrompt },
-            { role: "user", content: USER_PROMPT_WITH_CONTRACT }
-        ],
-    })
-
-    return response.output_text
+${chunk}
+"""
+`;
 }
 
-async function extractTextFromFile(file: File) {
-    return await file.text()
+async function analyzeFullContract(contract: string) {
+    const chunks = simpleChunk(contract);
+    const allIssues = [];
+
+    for (const chunk of chunks) {
+        const response = await analyze(buildPrompt(chunk));
+        let json;
+        try {
+            json = JSON.parse(response!);
+        } catch {
+            continue; // skip bad chunk instead of cras hing
+        }
+
+        if (Array.isArray(json.issues)) {
+            allIssues.push(...json.issues);
+        }
+
+        // small pause to avoid 503
+        await new Promise(r => setTimeout(r, 300));
+    }
+
+    return {
+        riskLevel: allIssues.some(i => i.severity === "high")
+            ? "high"
+            : allIssues.some(i => i.severity === "medium")
+                ? "medium"
+                : "low",
+        executiveSummary: "Summary based on contract analysis.",
+        issues: allIssues,
+        missingClauses: [],
+        recommendedActions: [],
+    };
 }
+
+const ai = new GoogleGenAI({ apiKey: geminiKey });
+async function analyze(chunks: string) {
+
+    const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: [{ role: "user", parts: [{ text: chunks }] }],
+        config: {
+            responseMimeType: "text/plain",
+            systemInstruction: CorePrompt,
+        },
+    });
+
+    return response.text
+}
+
+
+
 
 
 
 
 export async function POST(req: NextRequest) {
-  // get the Uploaded file and store in the database
-  const formData = await req.formData();
-  const file = formData.get("file") as File;
-  if (!file) {
-    return NextResponse.json({ error: "No file received" }, { status: 400 });
-  }
-  console.log("FILE TYPE : ", file.type);
-  const allowedTypes = ["application/pdf", "text/plain"];
-  if (!allowedTypes.includes(file.type)) {
-    return NextResponse.json({ error: "Invalid file type" }, { status: 400 });
-  }
+    // get the Uploaded file and store in the database
+    const formData = await req.formData();
+    const file = formData.get("File") as File;
+    if (!file) {
+        return NextResponse.json({ error: "No file received" }, { status: 400 });
+    }
+    console.log("FILE TYPE : ", file.type);
+    const allowedTypes = ["application/pdf", "text/plain"];
+    if (!allowedTypes.includes(file.type)) {
+        return NextResponse.json({ error: "Invalid file type" }, { status: 400 });
+    }
 
-  console.log(file.size);
-  if (file.size > 5 * 1024 * 1024) {
-    return NextResponse.json({ error: "File to Large" }, { status: 400 });
-  }
-  const text = await file.text();
-  //  Send the text to the GPT
-  // Get back a response and store the Response in Analyses Model / send it
-  return NextResponse.json(
-    {
-      message: "success",
-    },
-    { status: 201 }
-  );
+    console.log(file.size);
+    if (file.size > 5 * 1024 * 1024) {
+        return NextResponse.json({ error: "File to Large" }, { status: 400 });
+    }
+    const text = await file.text();
+    const analysis = await analyzeFullContract(text)
+    return NextResponse.json(
+        {
+            analysis,
+        },
+        { status: 201 }
+    );
 }
 
 export async function GET(req: NextRequest) {
-  const {} = await req.json();
+    const { } = await req.json();
 }
 
 export async function DELETE(req: NextRequest) {
-  const {} = await req.json();
+    const { } = await req.json();
 }
