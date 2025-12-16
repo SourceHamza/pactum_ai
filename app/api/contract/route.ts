@@ -52,14 +52,17 @@ function simpleChunk(text: string, size = 3500) {
 }
 
 function buildPrompt(chunk: string) {
-    return `
+return `
 Analyze the following PART of a contract.
 
 Rules:
 - This is not the full contract
-- Only report issues you see in this text
-- Do NOT assume missing clauses
-Payment terms
+- Identify risks, ambiguities, or unfavorable terms
+- Vague, one-sided, or unclear language counts as a risk
+- Do NOT assume content outside this text
+
+Focus on:
+- Payment terms
 - Scope clarity
 - Intellectual property ownership
 - Termination conditions
@@ -83,7 +86,7 @@ async function analyzeFullContract(contract: string) {
         try {
             json = JSON.parse(response!);
         } catch {
-            continue; // skip bad chunk instead of cras hing
+            continue; 
         }
 
         if (Array.isArray(json.issues)) {
@@ -154,6 +157,10 @@ export async function POST(req: NextRequest) {
         { status: 201 }
     );
 }
+
+
+
+
 
 export async function GET(req: NextRequest) {
     const { } = await req.json();
