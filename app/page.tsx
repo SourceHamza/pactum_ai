@@ -42,6 +42,13 @@ export default function LandingPage() {
                   Login
                 </Button>
               </SignInButton>
+              <SignedIn>
+                <a href="/dashboard">
+                  <Button variant="ghost" className="text-white hover:bg-white/10 font-medium px-8 py-3">
+                    Dashboard
+                  </Button>
+                </a>
+              </SignedIn>
             </div>
           </div>
 
