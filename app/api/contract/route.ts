@@ -126,11 +126,6 @@ async function analyze(chunks: string) {
 }
 
 
-
-
-
-
-
 export async function POST(req: NextRequest) {
     // get the Uploaded file and store in the database
     const formData = await req.formData();
