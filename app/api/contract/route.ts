@@ -41,4 +41,14 @@ export async function POST(req: NextRequest) {
 
     // Get back a response and store the Response in Analyses Model / send it 
 
+export async function GET(req : NextRequest ) {
+    const {} = await req.json();
+}
+
+export async function POST(req : NextRequest ) {
+    const {} = await req.json();
+}
+
+export async function DELETE(req : NextRequest ) {
+    const {} = await req.json();
 }
