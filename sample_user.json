@@ -1,0 +1,72 @@
+{
+  "id": "user_sample_123",
+  "object": "user",
+  "first_name": "Maren",
+  "last_name": "Philips",
+  "name": "Maren Philips",
+  "has_image": true,
+  "image_url": "https://images.clerk.dev/static/sample-avatar.png",
+  "primary_email_address_id": "eml_123",
+  "password_enabled": true,
+  "passkeys": [],
+  "two_factor_enabled": false,
+  "email_addresses": [
+    {
+      "id": "eml_123",
+      "object": "email_address",
+      "email_address": "maren.philips@example.com",
+      "verification": {
+        "status": "verified",
+        "strategy": "email_link",
+        "attempts": 0,
+        "expire_at": 1765906447487,
+        "error": null
+      },
+      "linked_to": [],
+      "created_at": 1765473847487,
+      "updated_at": 1765905847487
+    }
+  ],
+  "phone_numbers": [],
+  "web3_wallets": [],
+  "external_accounts": [
+    {
+      "id": "ext_123",
+      "object": "external_account",
+      "provider": "oauth_facebook",
+      "identification_id": "idn_123",
+      "provider_user_id": "prov_123",
+      "approved_scopes": "email,profile",
+      "email_address": "maren.philips@example.com",
+      "first_name": "Maren",
+      "last_name": "Philips",
+      "avatar_url": "https://images.clerk.dev/static/sample-avatar.png",
+      "public_metadata": {},
+      "created_at": 1764177847487,
+      "updated_at": 1765905847487
+    }
+  ],
+  "enterprise_accounts": [],
+  "public_metadata": {
+    "role": "member",
+    "feature_flag": "sample_only"
+  },
+  "private_metadata": {
+    "internal_note": "This is a sample user constructed from settings"
+  },
+  "unsafe_metadata": {},
+  "last_sign_in_at": 1765898647487,
+  "last_active_at": 1765904947487,
+  "created_at": 1758129847487,
+  "updated_at": 1765905847487,
+  "banned": false,
+  "locked": false,
+  "lockout_expires_in_seconds": null,
+  "delete_self_enabled": true,
+  "bypass_client_trust": false,
+  "create_organization_enabled": true,
+  "create_organizations_limit": null,
+  "totp_enabled": false,
+  "backup_code_enabled": false,
+  "legal_accepted_at": null
+}
