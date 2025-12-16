@@ -1,13 +1,67 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server"
+import OpenAI from "openai"
 
-async function extractTextFromFile(file: any) {
-  const text = await file.text();
-  return text;
+export const runtime = "nodejs"
+
+const CorePrompt = `You are an AI contract analysis engine.
+
+Your task is to analyze a contract and return a structured risk assessment.
+
+STRICT RULES:
+- Output MUST be valid JSON.
+- Do NOT include markdown, comments, or explanations outside JSON.
+- Every enum value must match exactly.
+- If no issues are found, return an empty array for "issues".
+- Be concise, clear, and professional.
+- Do NOT provide legal advice. Phrase suggestions as improvements or considerations.
+
+You must return a JSON object that strictly follows this schema:
+
+{
+  "riskLevel": "low | medium | high",
+  "executiveSummary": "string",
+  "issues": [
+    {
+      "category": "payment | scope | ip | termination | liability | confidentiality | other",
+      "severity": "low | medium | high",
+      "title": "string",
+      "explanation": "string",
+      "suggestion": "string",
+      "clauseSnippet": "string"
+    }
+  ],
+  "missingClauses": ["string"],
+  "recommendedActions": ["string"]
+}`
+
+async function analyze(contract: string) {
+    const client = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+    })
+
+    const USER_PROMPT_WITH_CONTRACT = `Analyze the following contract:
+
+"""
+${contract}
+"""`
+
+    const response = await client.responses.create({
+        model: "gpt-5-nano",
+        input: [
+            { role: "system", content: CorePrompt },
+            { role: "user", content: USER_PROMPT_WITH_CONTRACT }
+        ],
+    })
+
+    return response.output_text
 }
 
-async function extractTextFromPDF(pdf: any) {
-  // const text = await file.text()
+async function extractTextFromFile(file: File) {
+    return await file.text()
 }
+
+
+
 
 export async function POST(req: NextRequest) {
   // get the Uploaded file and store in the database
