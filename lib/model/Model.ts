@@ -5,7 +5,6 @@ const contractSchema = new mongoose.Schema(
     user_id: {
       type: String,
       required: true,
-      unique: true,
     },
     text: {
       type: String,
@@ -17,6 +16,7 @@ const contractSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Contract = mongoose.model("Contract", contractSchema);
+// const Contract = mongoose.model("Contract", contractSchema);
+const Contract = mongoose.models.Contract || mongoose.model("Contract", contractSchema);
 
 export default Contract;

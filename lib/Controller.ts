@@ -11,8 +11,18 @@ export async function saveUserData(text:string , analysis:object) {
         const newUser = new Contract({user_id,text,analysis})
         await newUser.save();
         console.log("Save Successfull")
-        return NextResponse.json({newUser},{status: 201})
+        return newUser
     }catch(err){
         console.log("ERROR in CONtroller : ",err)
+    }
+}
+
+export async function getContractsById(user_id:string){
+    try{
+        const data = await Contract.find({user_id});
+        console.log("DATA : ",data)
+        return data;
+    }catch(err){
+        console.error("ERROR in Fecthing contracts:",err)
     }
 }

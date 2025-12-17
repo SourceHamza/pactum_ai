@@ -1,11 +1,12 @@
-import { NextRequest, NextResponse } from "next/server"
-import { GoogleGenAI } from "@google/genai"
-import { saveUserData } from "@/lib/Controller"
-import {connectDB} from '@/lib/connectDB'
+import { NextRequest, NextResponse } from "next/server";
+import { GoogleGenAI } from "@google/genai";
+import { saveUserData, getContractsById } from "@/lib/Controller";
+import { connectDB } from "@/lib/connectDB";
+import { currentUser } from "@clerk/nextjs/server";
+import { error } from "console";
 
-await connectDB();
-export const runtime = "nodejs"
-const geminiKey = process.env.GEMINI_KEY
+export const runtime = "nodejs";
+const geminiKey = process.env.GEMINI_KEY;
 const CorePrompt = `You are an AI contract analysis engine.
 
 Your task is to analyze a contract and return a structured risk assessment.
@@ -35,19 +36,19 @@ The response must be a single valid JSON object. Do not include any text before 
   ],
   "missingClauses": ["string"],
   "recommendedActions": ["string"]
-}`
+}`;
 
-// CHUNKIN LOGIC 
+// CHUNKIN LOGIC
 function simpleChunk(text: string, size = 3500) {
-    const chunks = [];
-    let i = 0;
+  const chunks = [];
+  let i = 0;
 
-    while (i < text.length) {
-        chunks.push(text.slice(i, i + size));
-        i += size;
-    }
+  while (i < text.length) {
+    chunks.push(text.slice(i, i + size));
+    i += size;
+  }
 
-    return chunks;
+  return chunks;
 }
 
 function buildPrompt(chunk: string) {
@@ -76,93 +77,102 @@ ${chunk}
 }
 
 async function analyzeFullContract(contract: string) {
-    const chunks = simpleChunk(contract);
-    const allIssues = [];
+  const chunks = simpleChunk(contract);
+  const allIssues = [];
 
-    for (const chunk of chunks) {
-        const response = await analyze(buildPrompt(chunk));
-        let json;
-        try {
-            json = JSON.parse(response!);
-        } catch {
-            continue; 
-        }
-
-        if (Array.isArray(json.issues)) {
-            allIssues.push(...json.issues);
-        }
-
-        // small pause to avoid 503
-        await new Promise(r => setTimeout(r, 300));
+  for (const chunk of chunks) {
+    const response = await analyze(buildPrompt(chunk));
+    let json;
+    try {
+      json = JSON.parse(response!);
+    } catch {
+      continue;
     }
 
-    return {
-        riskLevel: allIssues.some(i => i.severity === "high")
-            ? "high"
-            : allIssues.some(i => i.severity === "medium")
-                ? "medium"
-                : "low",
-        executiveSummary: "Summary based on contract analysis.",
-        issues: allIssues,
-        missingClauses: [],
-        recommendedActions: [],
-    };
+    if (Array.isArray(json.issues)) {
+      allIssues.push(...json.issues);
+    }
+
+    // small pause to avoid 503
+    await new Promise((r) => setTimeout(r, 300));
+  }
+
+  return {
+    riskLevel: allIssues.some((i) => i.severity === "high")
+      ? "high"
+      : allIssues.some((i) => i.severity === "medium")
+      ? "medium"
+      : "low",
+    executiveSummary: "Summary based on contract analysis.",
+    issues: allIssues,
+    missingClauses: [],
+    recommendedActions: [],
+  };
 }
 
 const ai = new GoogleGenAI({ apiKey: geminiKey });
 async function analyze(chunks: string) {
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: [{ role: "user", parts: [{ text: chunks }] }],
+    config: {
+      responseMimeType: "application/json",
+      systemInstruction: CorePrompt,
+    },
+  });
 
-    const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: [{ role: "user", parts: [{ text: chunks }] }],
-        config: {
-            responseMimeType: "application/json",
-            systemInstruction: CorePrompt,
-        },
-    });
-
-    return response.text
+  return response.text;
 }
-
 
 export async function POST(req: NextRequest) {
-    // get the Uploaded file and store in the database
-    const formData = await req.formData();
-    const file = formData.get("File") as File;
-    if (!file) {
-        return NextResponse.json({ error: "No file received" }, { status: 400 });
-    }
-    console.log("FILE TYPE : ", file.type);
-    const allowedTypes = ["application/pdf", "text/plain"];
-    if (!allowedTypes.includes(file.type)) {
-        return NextResponse.json({ error: "Invalid file type" }, { status: 400 });
-    }
+    await connectDB();
+  // get the Uploaded file and store in the database
+  const formData = await req.formData();
+  const file = formData.get("File") as File;
+  if (!file) {
+    return NextResponse.json({ error: "No file received" }, { status: 400 });
+  }
+  console.log("FILE TYPE : ", file.type);
+  const allowedTypes = ["application/pdf", "text/plain"];
+  if (!allowedTypes.includes(file.type)) {
+    return NextResponse.json({ error: "Invalid file type" }, { status: 400 });
+  }
 
-    console.log(file.size);
-    if (file.size > 5 * 1024 * 1024) {
-        return NextResponse.json({ error: "File to Large" }, { status: 400 });
-    }
-    const text = await file.text();
-    const analysis = await analyzeFullContract(text)
-    //save to database
-    const res = await saveUserData(text,analysis);
-    return NextResponse.json(
-        {
-            analysis,
-            res
-        },
-        { status: 201 }
-    );
+  console.log(file.size);
+  if (file.size > 5 * 1024 * 1024) {
+    return NextResponse.json({ error: "File to Large" }, { status: 400 });
+  }
+  const text = await file.text();
+  const analysis = await analyzeFullContract(text);
+  //save to database
+  const newUser = await saveUserData(text, analysis);
+  return NextResponse.json(
+    {
+      analysis,
+      newUser,
+    },
+    { status: 201 }
+  );
 }
 
-
-
-
-
 export async function GET(req: NextRequest) {
-    const { } = await req.json();
+    await connectDB();
+  const user = await currentUser();
+  const user_id = user?.primaryEmailAddressId || "12345";
+  if (!user_id) {
+    return NextResponse.json({ error: "No User found" });
+  }
+  const contract_data_list = await getContractsById(user_id);
+  if (!contract_data_list) {
+    return NextResponse.json({ error: "No contracts found" });
+  }
+  return NextResponse.json({
+      success: true,
+      count: contract_data_list.length,
+      data: contract_data_list,
+    });
 }
 
 export async function DELETE(req: NextRequest) {
-    const { } = await req.json();
+  const {} = await req.json();
 }

@@ -1,59 +1,70 @@
 {
-    "analysis": {
-        "riskLevel": "high",
-        "executiveSummary": "Summary based on contract analysis.",
-        "issues": [
-            {
-                "category": "payment",
-                "severity": "high",
-                "title": "Absence of Payment Terms",
-                "explanation": "The contract text contains no information regarding payment schedules, fees, billing methods, refunds, or any financial obligations associated with using the Service. This is a critical omission, especially if the Service is intended to be paid.",
-                "suggestion": "If the Service requires payment, add a comprehensive 'Payment Terms' section detailing all financial aspects, including pricing, payment methods, billing cycles, late fees, and refund policies. If the service is free, this should be explicitly stated.",
-                "clauseSnippet": "TERMS AND CONDITIONS"
+    "success": true,
+    "count": 1,
+    "data": [
+        {
+            "_id": "69425860c45cf012629a4cbb",
+            "user_id": "12345",
+            "text": "TERMS AND CONDITIONS\r\n\r\nLast updated: [DATE]\r\n\r\nWelcome to [WEBSITE / APP NAME] (\"Service\", \"we\", \"our\", \"us\"). By accessing or using this Service, you agree to be bound by these Terms and Conditions (\"Terms\"). If you do not agree, do not use the Service.\r\n\r\nELIGIBILITY\r\nYou must be at least 18 years old to use this Service. By using the Service, you confirm that you meet this requirement.\r\n\r\nUSE OF THE SERVICE\r\nYou agree to use the Service only for lawful purposes and in accordance with these Terms. You must not:\r\n\r\nViolate any applicable laws or regulations\r\n\r\nAttempt to gain unauthorized access to systems or data\r\n\r\nUpload or distribute malware, viruses, or harmful code\r\n\r\nAbuse, harass, or harm other users\r\n\r\nWe reserve the right to suspend or terminate access if you violate these rules.\r\n\r\nUSER CONTENT\r\nYou are solely responsible for any content you submit, upload, or share through the Service.\r\n\r\nBy submitting content, you grant us a non-exclusive, worldwide, royalty-free license to use, store, and display your content for the purpose of operating and improving the Service.\r\n\r\nWe do not endorse or take responsibility for user-generated content.\r\n\r\nINTELLECTUAL PROPERTY\r\nAll content, features, and functionality of the Service, excluding user content, are the property of [COMPANY NAME] and are protected by intellectual property laws.\r\n\r\nYou may not copy, modify, distribute, or exploit any part of the Service without prior written permission.\r\n\r\nTHIRD-PARTY SERVICES\r\nThe Service may include links or integrations with third-party services. We are not responsible for their content, policies, or practices. Use them at your own risk.\r\n\r\nTERMINATION\r\nWe may suspend or terminate your access to the Service at any time, without notice, if you violate these Terms or misuse the Service.\r\n\r\nTermination does not eliminate obligations incurred before termination.\r\n\r\nDISCLAIMER OF WARRANTIES\r\nThe Service is provided \"as is\" and \"as available\" without warranties of any kind, express or implied. We do not guarantee accuracy, reliability, availability, or fitness for a particular purpose.\r\n\r\nLIMITATION OF LIABILITY\r\nTo the maximum extent permitted by law, [COMPANY NAME] shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Service.\r\n\r\nINDEMNIFICATION\r\nYou agree to indemnify and hold harmless [COMPANY NAME] from any claims, damages, losses, or expenses arising from your use of the Service or violation of these Terms.\r\n\r\nCHANGES TO TERMS\r\nWe may update these Terms at any time. Continued use of the Service after changes means you accept the revised Terms.\r\n\r\nGOVERNING LAW\r\nThese Terms are governed by the laws of [COUNTRY / STATE], without regard to conflict of law principles.\r\n\r\nCONTACT INFORMATION\r\nFor questions regarding these Terms, contact us at:\r\nEmail: [SUPPORT EMAIL]",
+            "analysis": {
+                "riskLevel": "high",
+                "executiveSummary": "Summary based on contract analysis.",
+                "issues": [
+                    {
+                        "category": "payment",
+                        "severity": "high",
+                        "title": "Absence of Payment Terms",
+                        "explanation": "The contract text contains no information regarding payment schedules, fees, billing methods, refunds, or any financial obligations associated with using the Service. This is a critical omission, especially if the Service is intended to be paid.",
+                        "suggestion": "If the Service requires payment, add a comprehensive 'Payment Terms' section detailing all financial aspects, including pricing, payment methods, billing cycles, late fees, and refund policies. If the service is free, this should be explicitly stated.",
+                        "clauseSnippet": "TERMS AND CONDITIONS"
+                    },
+                    {
+                        "category": "termination",
+                        "severity": "high",
+                        "title": "One-Sided Termination Rights",
+                        "explanation": "The Service provider retains the right to suspend or terminate user access 'at any time, without notice' and for vague reasons such as 'misuse of the Service.' This grants the provider absolute discretion without any reciprocal termination rights or clear notice periods for the user, creating significant insecurity for users.",
+                        "suggestion": "Revise the termination clause to include reasonable notice periods for termination without cause by either party. Define 'misuse of the Service' more clearly and consider granting users the ability to terminate their accounts under specified conditions.",
+                        "clauseSnippet": "We may suspend or terminate your access to the Service at any time, without notice, if you violate these Terms or misuse the Service."
+                    },
+                    {
+                        "category": "confidentiality",
+                        "severity": "high",
+                        "title": "Lack of Data Protection and Privacy Provisions",
+                        "explanation": "The contract lacks any specific clauses regarding how user data (beyond 'User Content') is collected, stored, processed, or protected. There is no mention of compliance with data protection regulations (e.g., GDPR, CCPA) or a link to a Privacy Policy, which is a critical omission for any online service handling personal information.",
+                        "suggestion": "Implement a clear 'Data Protection' or 'Privacy' clause detailing how personal data is handled, stored, and protected. Include commitments to relevant data protection laws and provide a clear link to a comprehensive Privacy Policy.",
+                        "clauseSnippet": "USER CONTENT\nYou are solely responsible for any content you submit, upload, or share through the Service."
+                    },
+                    {
+                        "category": "liability",
+                        "severity": "medium",
+                        "title": "Broad and One-Sided Indemnification Clause",
+                        "explanation": "Users are required to indemnify and hold harmless the company from 'any claims, damages, losses, or expenses arising from your use of the Service or violation of these Terms.' This clause is very broad and places a significant liability burden on the user without any reciprocal indemnification from the company.",
+                        "suggestion": "Consider narrowing the scope of indemnification to specifically cover claims arising from the user's negligent acts, willful misconduct, or breach of the Terms. Explore adding a reciprocal indemnification clause for the company's breaches or negligence, where appropriate.",
+                        "clauseSnippet": "You agree to indemnify and hold harmless [COMPANY NAME] from any claims, damages, losses, or expenses arising from your use of the Service or violation of these Terms."
+                    },
+                    {
+                        "category": "ip",
+                        "severity": "medium",
+                        "title": "Broad User Content License",
+                        "explanation": "Users grant a 'non-exclusive, worldwide, royalty-free license to use, store, and display your content for the purpose of operating and improving the Service.' While common for user-generated content platforms, this license is broad, perpetual (as no end date is specified), and 'operating and improving the Service' could be interpreted extensively, potentially allowing for broader use than a user might expect.",
+                        "suggestion": "Clarify or consider limiting the scope and duration of the user content license. For example, specify that the license terminates upon account deletion, or provide more specific examples of what 'operating and improving the Service' entails regarding user content.",
+                        "clauseSnippet": "By submitting content, you grant us a non-exclusive, worldwide, royalty-free license to use, store, and display your content for the purpose of operating and improving the Service."
+                    },
+                    {
+                        "category": "scope",
+                        "severity": "low",
+                        "title": "Vague Scope of Service for Users",
+                        "explanation": "While the 'Use of the Service' section lists prohibited actions, it does not clearly define the expected or permitted scope of use beyond 'lawful purposes.' This can lead to ambiguity regarding what activities are specifically encouraged or supported by the Service.",
+                        "suggestion": "Consider adding a more explicit statement outlining the intended purpose and scope of the Service for users, providing clearer guidance on appropriate use.",
+                        "clauseSnippet": "You agree to use the Service only for lawful purposes and in accordance with these Terms. You must not:"
+                    }
+                ],
+                "missingClauses": [],
+                "recommendedActions": []
             },
-            {
-                "category": "termination",
-                "severity": "high",
-                "title": "One-Sided Termination Rights",
-                "explanation": "The Service provider retains the right to suspend or terminate user access 'at any time, without notice' and for vague reasons such as 'misuse of the Service.' This grants the provider absolute discretion without any reciprocal termination rights or clear notice periods for the user, creating significant insecurity for users.",
-                "suggestion": "Revise the termination clause to include reasonable notice periods for termination without cause by either party. Define 'misuse of the Service' more clearly and consider granting users the ability to terminate their accounts under specified conditions.",
-                "clauseSnippet": "We may suspend or terminate your access to the Service at any time, without notice, if you violate these Terms or misuse the Service."
-            },
-            {
-                "category": "confidentiality",
-                "severity": "high",
-                "title": "Lack of Data Protection and Privacy Provisions",
-                "explanation": "The contract lacks any specific clauses regarding how user data (beyond 'User Content') is collected, stored, processed, or protected. There is no mention of compliance with data protection regulations (e.g., GDPR, CCPA) or a link to a Privacy Policy, which is a critical omission for any online service handling personal information.",
-                "suggestion": "Implement a clear 'Data Protection' or 'Privacy' clause detailing how personal data is handled, stored, and protected. Include commitments to relevant data protection laws and provide a clear link to a comprehensive Privacy Policy.",
-                "clauseSnippet": "USER CONTENT\nYou are solely responsible for any content you submit, upload, or share through the Service."
-            },
-            {
-                "category": "liability",
-                "severity": "medium",
-                "title": "Broad and One-Sided Indemnification Clause",
-                "explanation": "Users are required to indemnify and hold harmless the company from 'any claims, damages, losses, or expenses arising from your use of the Service or violation of these Terms.' This clause is very broad and places a significant liability burden on the user without any reciprocal indemnification from the company.",
-                "suggestion": "Consider narrowing the scope of indemnification to specifically cover claims arising from the user's negligent acts, willful misconduct, or breach of the Terms. Explore adding a reciprocal indemnification clause for the company's breaches or negligence, where appropriate.",
-                "clauseSnippet": "You agree to indemnify and hold harmless [COMPANY NAME] from any claims, damages, losses, or expenses arising from your use of the Service or violation of these Terms."
-            },
-            {
-                "category": "ip",
-                "severity": "medium",
-                "title": "Broad User Content License",
-                "explanation": "Users grant a 'non-exclusive, worldwide, royalty-free license to use, store, and display your content for the purpose of operating and improving the Service.' While common for user-generated content platforms, this license is broad, perpetual (as no end date is specified), and 'operating and improving the Service' could be interpreted extensively, potentially allowing for broader use than a user might expect.",
-                "suggestion": "Clarify or consider limiting the scope and duration of the user content license. For example, specify that the license terminates upon account deletion, or provide more specific examples of what 'operating and improving the Service' entails regarding user content.",
-                "clauseSnippet": "By submitting content, you grant us a non-exclusive, worldwide, royalty-free license to use, store, and display your content for the purpose of operating and improving the Service."
-            },
-            {
-                "category": "scope",
-                "severity": "low",
-                "title": "Vague Scope of Service for Users",
-                "explanation": "While the 'Use of the Service' section lists prohibited actions, it does not clearly define the expected or permitted scope of use beyond 'lawful purposes.' This can lead to ambiguity regarding what activities are specifically encouraged or supported by the Service.",
-                "suggestion": "Consider adding a more explicit statement outlining the intended purpose and scope of the Service for users, providing clearer guidance on appropriate use.",
-                "clauseSnippet": "You agree to use the Service only for lawful purposes and in accordance with these Terms. You must not:"
-            }
-        ],
-        "missingClauses": [],
-        "recommendedActions": []
-    },
-    "res": {}
+            "createdAt": "2025-12-17T07:14:40.914Z",
+            "updatedAt": "2025-12-17T07:14:40.914Z",
+            "__v": 0
+        }
+    ]
 }
